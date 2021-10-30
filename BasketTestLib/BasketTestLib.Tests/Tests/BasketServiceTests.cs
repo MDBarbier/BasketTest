@@ -110,20 +110,20 @@ namespace BasketTestLib.Tests
             var product2 = new Jumper(20.00m);
             var offerVoucher = new OfferVoucher(10.00m, 30.00m, "YYY-YYY", typeof(Product));
 
-            //Act
+            //Act - add the products and apply the voucher, then calculate the basket price
             basket.AddProduct(product1);
             basket.AddProduct(product2);
             var applyResult = basket.ApplyVoucher(offerVoucher, out string applyVoucherMessage);
             var firstTotal = basket.GetBasketFinalValue();
 
-            //Assert
+            //Assert - check that the voucher was applied OK initially and the amount has been updated
             applyResult.Should().BeTrue();
             firstTotal.Should().Be(20.00m);
 
-            //Act
+            //Act - now remove the product which means the voucher is not valid any more
             basket.RemoveProduct(product1, out string message);
 
-            //Assert
+            //Assert - check that the voucher has been removed the total has been recalculated correctly, plus a message has been returned to indicate the voucher is no longer valid
             basket.BasketContents.Count.Should().Be(1);
             basket.AppliedVouchers.Count.Should().Be(0);
             basket.BasketContents.First().GetType().Should().Be(typeof(Jumper));
