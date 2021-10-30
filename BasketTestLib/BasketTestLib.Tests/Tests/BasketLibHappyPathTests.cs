@@ -1,12 +1,19 @@
 using BasketTestLib.Models;
 using BasketTestLib.Services;
+using BasketTestLib.Utility;
 using FluentAssertions;
+using System.Threading;
 using Xunit;
 
 namespace BasketTestLib.Tests
 {
     public class BasketLibHappyPathTests
     {
+        public BasketLibHappyPathTests()
+        {
+            Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("en-GB");            
+        }
+
         [Fact]
         public void Basket1HappyPath()
         {
@@ -32,14 +39,14 @@ namespace BasketTestLib.Tests
         {
             //Arrange
             var jumper = new Jumper(54.65m);
-            var gloves = new Gloves(10.50m);            
+            var gloves = new Gloves(10.50m);
             var expectedTotal = 60.15m;
             var giftVoucher = new GiftVoucher(5.00m, "XXX-XXX");
             var basketService = new BasketService(new CodeCheckServiceStub());
 
             //Act
             basketService.AddProduct(jumper);
-            basketService.AddProduct(gloves);            
+            basketService.AddProduct(gloves);
             var voucherApplicationResult = giftVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
             var totalBasketValue = basketService.GetBasketFinalValue();
 
@@ -54,19 +61,19 @@ namespace BasketTestLib.Tests
         {
             //Arrange
             var jumper = new Jumper(26.00m);
-            var gloves = new Gloves(25.00m);            
+            var gloves = new Gloves(25.00m);
             var expectedTotal = 51.00m;
             var basketService = new BasketService(new CodeCheckServiceStub());
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(HeadGear));
 
             //Act
             basketService.AddProduct(jumper);
-            basketService.AddProduct(gloves);            
+            basketService.AddProduct(gloves);
             var voucherApplicationResult = offerVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
             var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
-            totalBasketValue.Should().Be(expectedTotal);            
+            totalBasketValue.Should().Be(expectedTotal);
             voucherApplicationResult.Should().BeFalse();
             message.Should().Be("There are no products in your basket applicable to Offer Voucher YYY-YYY.");
         }
@@ -93,7 +100,7 @@ namespace BasketTestLib.Tests
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);
-            voucherApplicationResult.Should().BeTrue();            
+            voucherApplicationResult.Should().BeTrue();
             message.Should().Be(string.Empty);
         }
 
@@ -135,14 +142,15 @@ namespace BasketTestLib.Tests
 
             //Act
             basketService.AddProduct(gloves);
-            basketService.AddProduct(giftVoucher);            
+            basketService.AddProduct(giftVoucher);
             var voucherApplicationResult = offerVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
             var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);
             voucherApplicationResult.Should().BeFalse();
-            message.Should().Be("You have not reached the spend threshold for Gift Voucher YYY-YYY. Spend another £25.01 to receive £5.00 discount from your basket total.");
+            var expectedMessage = $"You have not reached the spend threshold for Gift Voucher YYY-YYY. Spend another {Currency.GetCurrencySymbol()}25.01 to receive {Currency.GetCurrencySymbol()}5.00 discount from your basket total.";
+            Assert.Equal(message, expectedMessage);            
         }
 
         [Fact]
@@ -155,7 +163,7 @@ namespace BasketTestLib.Tests
             var basketService = new BasketService(new CodeCheckServiceStub());
 
             //Act
-            basketService.AddProduct(gloves);            
+            basketService.AddProduct(gloves);
             var voucherApplicationResult = giftVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
             var totalBasketValue = basketService.GetBasketFinalValue();
 
