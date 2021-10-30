@@ -22,9 +22,7 @@ namespace BasketTestLib.Models
         public bool CheckValidity(List<Product> basketContents, out string message)
         {
             message = string.Empty;
-            bool foundValidProduct = false;
-            decimal totalPriceOfBasket = 0m;
-            ProcessBasketItems(basketContents, ref foundValidProduct, ref totalPriceOfBasket);
+            (bool foundValidProduct, decimal totalPriceOfBasket) = ProcessBasketItems(basketContents);
 
             if (!foundValidProduct)
             {
@@ -40,8 +38,11 @@ namespace BasketTestLib.Models
             return true;
         }
 
-        private void ProcessBasketItems(List<Product> basketContents, ref bool foundValidProduct, ref decimal totalPriceOfBasket)
+        private ValueTuple<bool, decimal> ProcessBasketItems(List<Product> basketContents)
         {
+            bool foundValidProduct = false;
+            decimal totalPriceOfBasket = 0.0m;
+
             foreach (var item in basketContents)
             {
                 if (item.GetType() != typeof(GiftVoucher))
@@ -54,6 +55,8 @@ namespace BasketTestLib.Models
                     foundValidProduct = true;
                 }
             }
+
+            return (foundValidProduct, totalPriceOfBasket);
         }
     }
 }
