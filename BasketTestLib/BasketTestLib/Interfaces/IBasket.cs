@@ -7,6 +7,7 @@ namespace BasketTestLib.Interfaces
     public interface IBasket
     {
         public List<Product> BasketContents { get; set; }
+        public List<IVoucher> AppliedVouchers { get; set; }
         public decimal BasketNetTotal { get; set; }
         public decimal BasketDiscount { get; set; }
         public Guid BasketGuid { get; set; }
@@ -21,5 +22,6 @@ namespace BasketTestLib.Interfaces
         bool ApplyVoucher(IVoucher voucher, out string message);
 
         decimal GetTotalValueForType(Type applicableType);
+        void RemoveProduct(Product product, out string message);
     }
 }

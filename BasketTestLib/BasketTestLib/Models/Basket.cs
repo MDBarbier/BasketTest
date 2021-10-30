@@ -1,4 +1,5 @@
 ﻿using BasketTestLib.Exceptions;
+using BasketTestLib.Extensions;
 using BasketTestLib.Interfaces;
 using BasketTestLib.Strategies;
 using BasketTestLib.Validators;
@@ -6,6 +7,7 @@ using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BasketTestLib.Models
 {
@@ -13,6 +15,7 @@ namespace BasketTestLib.Models
     {
         #region Auto implemented Properties
         public List<Product> BasketContents { get; set; }
+        public List<IVoucher> AppliedVouchers { get; set; }
         public decimal BasketNetTotal { get; set; }
         public decimal BasketDiscount { get; set; }
         public Guid BasketGuid { get; set; }
@@ -26,6 +29,7 @@ namespace BasketTestLib.Models
         public Basket(ICodeCheckService codeCheckService)
         {
             BasketContents = new List<Product>();
+            AppliedVouchers = new List<IVoucher>();
             _codeCheckService = codeCheckService;
         }
         #endregion
@@ -46,6 +50,31 @@ namespace BasketTestLib.Models
             {
                 throw new InvalidProductException("Validation failed with message: " + resultOfValidation.ToString());
             }
+        }
+
+        public void RemoveProduct(Product product, out string message)
+        {
+            BasketContents.Remove(product);
+
+            RecalculateDiscount(out message);
+        }
+
+        private void RecalculateDiscount(out string compositeMessage)
+        {
+            BasketDiscount = 0.0m;            
+            var sb = new StringBuilder();
+            List<IVoucher> tempVoucherList = AppliedVouchers.DeepCopy();
+            AppliedVouchers.Clear();
+
+            foreach (var voucher in tempVoucherList)
+            {
+                if (!ApplyVoucher(voucher, out string message))
+                {
+                    sb.Append(message);
+                }                
+            }
+
+            compositeMessage = sb.ToString();
         }
 
         public decimal GetBasketFinalValue()

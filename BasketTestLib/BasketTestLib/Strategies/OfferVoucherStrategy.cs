@@ -23,6 +23,7 @@ namespace BasketTestLib.Strategies
                 var actualDiscount = maxDiscountable - voucher.DiscountAmount > 0 ? voucher.DiscountAmount : maxDiscountable;
                 basket.BasketDiscount += actualDiscount;
                 successfullyApplied = true;
+                basket.AppliedVouchers.Add(voucher);
             }
             else
             {
