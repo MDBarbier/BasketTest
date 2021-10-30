@@ -1,6 +1,9 @@
 ﻿using BasketTestLib.Models;
 using System.Collections.Generic;
 
+/// <summary>
+/// Represents a generic voucher
+/// </summary>
 namespace BasketTestLib.Interfaces
 {
     public interface IVoucher

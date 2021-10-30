@@ -7,26 +7,35 @@ using System.Linq;
 
 namespace BasketTestLib.Services
 {
+    /// <summary>
+    /// Singleton class (thread safe) which exposes basket functionality. Allows the creation of a new basket, and retrieval of existing baskets by their GUID.
+    /// </summary>
     public class BasketService
     {
         #region Properties
+
         public Dictionary<Guid, IBasket> Baskets { get; set; }
         public Guid Guid { get; set; }
+
         #endregion
 
         #region Local Fields
+
         ICodeCheckService _codeCheckService;
         private static BasketService _singletonInstance;
-        private static readonly object _lock = new();        
+        private static readonly object _lock = new();    
+        
         #endregion
 
         #region Constructors
+
         private BasketService(ICodeCheckService codeCheckService)
         {            
             _codeCheckService = codeCheckService;
             Baskets = new Dictionary<Guid, IBasket>();
             Guid = Guid.NewGuid();
         }
+
         #endregion
 
         #region Instance methods

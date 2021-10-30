@@ -14,24 +14,30 @@ namespace BasketTestLib.Models
     public class Basket : IBasket
     {
         #region Auto implemented Properties
+
         public List<Product> BasketContents { get; set; }
         public List<IVoucher> AppliedVouchers { get; set; }
         public decimal BasketNetTotal { get; set; }
         public decimal BasketDiscount { get; set; }
         public Guid BasketGuid { get; set; }
+
         #endregion
 
         #region Local Fields
-        ICodeCheckService _codeCheckService;
+
+        readonly ICodeCheckService _codeCheckService;
+
         #endregion
 
         #region Constructors
+
         public Basket(ICodeCheckService codeCheckService)
         {
             BasketContents = new List<Product>();
             AppliedVouchers = new List<IVoucher>();
             _codeCheckService = codeCheckService;
         }
+
         #endregion
 
         #region Instance methods
@@ -63,7 +69,7 @@ namespace BasketTestLib.Models
         {
             BasketDiscount = 0.0m;            
             var sb = new StringBuilder();
-            List<IVoucher> tempVoucherList = AppliedVouchers.DeepCopy();
+            var tempVoucherList = AppliedVouchers.DeepCopy();
             AppliedVouchers.Clear();
 
             foreach (var voucher in tempVoucherList)
@@ -80,7 +86,7 @@ namespace BasketTestLib.Models
         public decimal GetBasketFinalValue()
         {
             var discountableBasketTotal = GetNonVoucherNetTotal();
-            var undiscountableAmount = BasketNetTotal - discountableBasketTotal;
+            var unDiscountableAmount = BasketNetTotal - discountableBasketTotal;
             var finalAmount = 0m;
             var resultOfDiscount = discountableBasketTotal - BasketDiscount;
 
@@ -89,7 +95,7 @@ namespace BasketTestLib.Models
                 finalAmount += resultOfDiscount;
             }
 
-            finalAmount += undiscountableAmount;
+            finalAmount += unDiscountableAmount;
             return finalAmount;
         }
 
@@ -118,11 +124,6 @@ namespace BasketTestLib.Models
             message = string.Empty;
             var voucherStrategy = new VoucherStrategyContext();
 
-            if (!_codeCheckService.CheckCodeValidity(voucher.VoucherCode))
-            {
-                throw new VoucherCodeInvalidException($"Provided voucher code {voucher.VoucherCode} was not recognised");
-            }
-
             switch (voucher)
             {
                 case GiftVoucher:
@@ -138,8 +139,13 @@ namespace BasketTestLib.Models
             return voucherStrategy.ApplyVoucher(_codeCheckService, voucher, this, out message);
         }
 
-        private static void ValidateVoucher(IVoucher voucher)
+        private void ValidateVoucher(IVoucher voucher)
         {
+            if (!_codeCheckService.CheckCodeValidity(voucher.VoucherCode))
+            {
+                throw new VoucherCodeInvalidException($"Provided voucher code {voucher.VoucherCode} was not recognised");
+            }
+
             var validator = new VoucherValidator();
             ValidationResult resultOfValidation = validator.Validate(voucher);
 
@@ -151,7 +157,8 @@ namespace BasketTestLib.Models
 
         public decimal GetTotalValueForType(Type applicableType)
         {
-            var productsOfType = BasketContents.Where(item => item.GetType() == applicableType || item.GetType().IsSubclassOf(applicableType)).ToList();
+            var productsOfType = BasketContents.Where(item => item.GetType() == applicableType
+                                                              || item.GetType().IsSubclassOf(applicableType)).ToList();
             var subTotal = 0.0m;
 
             foreach (var item in productsOfType)
@@ -161,6 +168,7 @@ namespace BasketTestLib.Models
 
             return subTotal;
         }
+
         #endregion
     }
 }

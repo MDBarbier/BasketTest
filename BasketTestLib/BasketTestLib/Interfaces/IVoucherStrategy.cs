@@ -1,5 +1,6 @@
-﻿using BasketTestLib.Models;
-
+﻿/// <summary>
+/// Represents a strategy for handling vouchers, allowing customisation of the ApplyVoucher functionality.
+/// </summary>
 namespace BasketTestLib.Interfaces
 {
     public interface IVoucherStrategy

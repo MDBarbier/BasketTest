@@ -8,7 +8,7 @@ namespace BasketTestLib.Validators
        public ProductValidator()
         {
             RuleFor(x => x.UnitPrice).NotEmpty();
-            RuleFor(x => x.UnitPrice).NotEqual(0.0m);
+            RuleFor(x => x.UnitPrice).GreaterThan(0.0m);
         }
     }
 }

@@ -2,6 +2,9 @@
 
 namespace BasketTestLib.Strategies
 {
+    /// <summary>
+    /// Context for managing the strategy used for Vouchers
+    /// </summary>
     public class VoucherStrategyContext
     {
         private IVoucherStrategy _voucherStrategy;

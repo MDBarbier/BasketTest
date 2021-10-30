@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BasketTestLib.Extensions
 {
@@ -10,7 +6,7 @@ namespace BasketTestLib.Extensions
     {
         public static List<T> DeepCopy<T>(this List<T> l)
         {
-            List<T> newList = new List<T>();
+            List<T> newList = new();
 
             foreach (var item in l)
             {

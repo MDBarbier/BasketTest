@@ -8,7 +8,7 @@ It has the abilty to add a range of products, and to apply vouchers to the baske
 
 ## Time spent
 
-Including review of the problem, writing the class lib, writing the unit tests and refactoring I have spent approx 6 hours on the application.
+Including review of the problem, writing the class lib, writing the unit tests, testing the application and refactoring I have spent approx 5-6 hours on the assignment.
 
 ## Namespaces
 
@@ -36,7 +36,7 @@ Now the client has a reference to an instance of Basket they can use the various
 ### Design patterns
 
 - The BasketService is a Singleton for centralised control and management of baskets, including retrieving a basket by GUID
-- The Basket is effectively a facade for the more complex logic such as ApplyVoucher - the client does not need to worry about the calculations going on under the hood
+- The BasketService is also effectively a facade for the more complex logic such as ApplyVoucher - the client does not need to worry about the calculations going on under the hood
 - The Strategy pattern is used to make the varying logic for vouchers cleaner, and this could also easily be extended if more voucher types were added later
 
 ### SOLID principles
@@ -57,4 +57,4 @@ I have used the Visual Studio Code metric tools to review the cyclometric comple
 Things that I would consider adding should this demo be extended:
 
 - Repository/unit of work pattern to interact with a datastore to represent a product stock database
-- Add functionality to deal with the excess amounts from applied gift vouchers
+- Add functionality to deal with the excess amounts from applied gift vouchers i.e. if a £50 voucher is used but max discountable is £25

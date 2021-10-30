@@ -9,7 +9,7 @@ namespace BasketTestLib.Validators
         {
             RuleFor(x => x.VoucherCode).NotEmpty();
             RuleFor(x => x.DiscountAmount).NotEmpty();
-            RuleFor(x => x.DiscountAmount).NotEqual(0.0m);
+            RuleFor(x => x.DiscountAmount).GreaterThan(0.0m);
             RuleFor(x => x.ThresholdToActivate).NotNull();
         }
     }

@@ -113,7 +113,7 @@ namespace BasketTestLib.Tests
             //Act - add the products and apply the voucher, then calculate the basket price
             basket.AddProduct(product1);
             basket.AddProduct(product2);
-            var applyResult = basket.ApplyVoucher(offerVoucher, out string applyVoucherMessage);
+            var applyResult = basket.ApplyVoucher(offerVoucher, out string _);
             var firstTotal = basket.GetBasketFinalValue();
 
             //Assert - check that the voucher was applied OK initially and the amount has been updated
@@ -145,7 +145,7 @@ namespace BasketTestLib.Tests
             //Act - add the products and apply the voucher, then calculate the basket price
             basket.AddProduct(product1);
             basket.AddProduct(product2);
-            var applyResult1 = basket.ApplyVoucher(offerVoucher1, out string applyVoucherMessage1);
+            var applyResult1 = basket.ApplyVoucher(offerVoucher1, out string _);
 
             //Assert - check that the voucher was applied OK initially and the amount has been updated
             applyResult1.Should().BeTrue();
