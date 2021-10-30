@@ -1,5 +1,6 @@
 ﻿using BasketTestLib.Exceptions;
 using BasketTestLib.Interfaces;
+using BasketTestLib.Strategies;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,57 +74,26 @@ namespace BasketTestLib.Models
         public bool ApplyVoucher(IVoucher voucher, out string message)
         {
             message = string.Empty;
+            var voucherStrategy = new VoucherStrategyContext();
+
             if (!_codeCheckService.CheckCodeValidity(voucher.VoucherCode))
             {
                 throw new VoucherCodeInvalidException($"Provided voucher code {voucher.VoucherCode} was not recognised");
             }
 
-            var successfullyApplied = voucher switch
+            switch (voucher)
             {
-                GiftVoucher giftVoucher => ApplyGiftVoucher(ref message, giftVoucher),
-                OfferVoucher offerVoucher => ApplyOfferVoucher(ref message, offerVoucher),
-                _ => throw new VoucherTypeNotRecognisedException($"The voucher type of '{voucher.GetType()}' was not recognised."),
-            };
-            return successfullyApplied;
-        }
-
-        private bool ApplyOfferVoucher(ref string message, OfferVoucher offerVoucher)
-        {
-            bool successfullyApplied;
-            if (offerVoucher.CheckValidity(BasketContents, out string offerMessage))
-            {
-                var maxDiscountable = GetTotalValueForType(offerVoucher.ApplicableProductType);
-                var actualDiscount = maxDiscountable - offerVoucher.DiscountAmount > 0 ? offerVoucher.DiscountAmount : maxDiscountable;
-                BasketDiscount += actualDiscount;
-                successfullyApplied = true;
-            }
-            else
-            {
-                message = offerMessage;
-                successfullyApplied = false;
+                case GiftVoucher:
+                    voucherStrategy.SetStrategy(new GiftVoucherStrategy());
+                    break;
+                case OfferVoucher:
+                    voucherStrategy.SetStrategy(new OfferVoucherStrategy());
+                    break;
+                default:
+                    throw new VoucherTypeNotRecognisedException($"The voucher type of '{voucher.GetType()}' was not recognised.");
             }
 
-            return successfullyApplied;
-        }
-
-        private bool ApplyGiftVoucher(ref string message, GiftVoucher giftVoucher)
-        {
-            bool successfullyApplied;
-            if (giftVoucher.CheckValidity(BasketContents, out string giftMessage))
-            {
-                var unDiscountable = GetTotalValueForType(typeof(GiftVoucher));
-                var maxDiscountable = BasketNetTotal - unDiscountable;
-                var actualDiscount = maxDiscountable - giftVoucher.DiscountAmount > 0 ? giftVoucher.DiscountAmount : maxDiscountable;
-                BasketDiscount += actualDiscount;
-                successfullyApplied = true;
-            }
-            else
-            {
-                message = giftMessage;
-                successfullyApplied = false;
-            }
-
-            return successfullyApplied;
+            return voucherStrategy.ApplyVoucher(_codeCheckService, voucher, this, out message);            
         }
 
         public float GetTotalValueForType(Type applicableType)

@@ -17,7 +17,7 @@ namespace BasketTestLib.Services
         #region Local Fields
         ICodeCheckService _codeCheckService;
         private static BasketService _singletonInstance;
-        private static readonly object _lock = new object();        
+        private static readonly object _lock = new();        
         #endregion
 
         #region Constructors
