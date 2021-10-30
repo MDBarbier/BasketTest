@@ -32,3 +32,8 @@ In the design of the BasketService component I have attempted to keep to SOLID p
 
 I have used the Visual Studio Code metric tools to review the cyclometric complexity of the methods and reduced this where it got too high (>5 was the metric I used).
 
+## Futher work to be considered
+
+Things that I would consider adding should this demo be extended:
+
+- Repository/unit of work pattern to interact with a datastore to represent a product stock database

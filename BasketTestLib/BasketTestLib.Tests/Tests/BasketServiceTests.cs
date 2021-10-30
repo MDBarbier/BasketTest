@@ -41,6 +41,38 @@ namespace BasketTestLib.Tests
             thread3Guid.Should().Be(thread2Guid);
         }
 
+        [Fact]
+        public void TestBasketRetrieval()
+        {
+            //Arrange
+            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
+            
+            //Act
+            var basket = singleton.GetBasket(null);
+            var retrievedBasket = singleton.GetBasket(basket.BasketGuid);
+
+            //Assert
+            basket.BasketGuid.Should().NotBeEmpty();
+            retrievedBasket.Should().NotBeNull();
+            retrievedBasket.BasketGuid.Should().Be(basket.BasketGuid);
+        }
+
+        [Fact]
+        public void TestMultipleBasket()
+        {
+            //Arrange
+            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
+
+            //Act
+            var basket1 = singleton.GetBasket(null);
+            var basket2 = singleton.GetBasket(null);            
+
+            //Assert
+            basket1.BasketGuid.Should().NotBeEmpty();
+            basket2.BasketGuid.Should().NotBeEmpty();            
+            basket1.BasketGuid.Should().NotBe(basket2.BasketGuid);
+        }
+
         private static Guid TestSingleton()
         {
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
