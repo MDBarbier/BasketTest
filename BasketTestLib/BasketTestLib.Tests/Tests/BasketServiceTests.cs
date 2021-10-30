@@ -9,7 +9,7 @@ using Xunit;
 namespace BasketTestLib.Tests
 {
     public class BasketServiceTests
-    {        
+    {
         [Fact]
         public void TestSingletonThreadSafeBehaviour()
         {
@@ -48,7 +48,7 @@ namespace BasketTestLib.Tests
         {
             //Arrange
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            
+
             //Act
             var basket = singleton.GetBasket(null);
             var retrievedBasket = singleton.GetBasket(basket.BasketGuid);
@@ -67,11 +67,11 @@ namespace BasketTestLib.Tests
 
             //Act
             var basket1 = singleton.GetBasket(null);
-            var basket2 = singleton.GetBasket(null);            
+            var basket2 = singleton.GetBasket(null);
 
             //Assert
             basket1.BasketGuid.Should().NotBeEmpty();
-            basket2.BasketGuid.Should().NotBeEmpty();            
+            basket2.BasketGuid.Should().NotBeEmpty();
             basket1.BasketGuid.Should().NotBe(basket2.BasketGuid);
         }
 
@@ -131,6 +131,32 @@ namespace BasketTestLib.Tests
             message.Should().Be("You have not reached the spend threshold for Gift Voucher YYY-YYY. Spend another £10.00 to receive £10.00 discount from your basket total.");
         }
 
+        [Fact]
+        public void TestOnlySingleOfferVoucherAllowed()
+        {
+            //Arrange
+            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
+            var basket = singleton.GetBasket(null);
+            var product1 = new Gloves(50.00m);
+            var product2 = new Jumper(20.00m);
+            var offerVoucher1 = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
+            var offerVoucher2 = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
+
+            //Act - add the products and apply the voucher, then calculate the basket price
+            basket.AddProduct(product1);
+            basket.AddProduct(product2);
+            var applyResult1 = basket.ApplyVoucher(offerVoucher1, out string applyVoucherMessage1);
+
+            //Assert - check that the voucher was applied OK initially and the amount has been updated
+            applyResult1.Should().BeTrue();
+
+            //Act - now remove the product which means the voucher is not valid any more
+            var applyResult2 = basket.ApplyVoucher(offerVoucher2, out string applyVoucherMessage2);
+
+            //Assert - check that the voucher has been removed the total has been recalculated correctly, plus a message has been returned to indicate the voucher is no longer valid
+            applyResult2.Should().BeFalse();
+            applyVoucherMessage2.Should().Be("An offer voucher has already been applied, only one offer voucher may be used per transaction");
+        }
         private static Guid TestSingleton()
         {
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());

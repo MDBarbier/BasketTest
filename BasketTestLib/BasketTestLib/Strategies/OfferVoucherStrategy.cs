@@ -14,6 +14,15 @@ namespace BasketTestLib.Strategies
                 throw new VoucherCodeInvalidException($"Provided voucher code {voucher.VoucherCode} was not recognised");
             }
 
+            foreach (var appliedVoucher in basket.AppliedVouchers)
+            {
+                if (appliedVoucher.GetType() == typeof(OfferVoucher))
+                {
+                    message = "An offer voucher has already been applied, only one offer voucher may be used per transaction";
+                    return false;
+                }
+            }
+
             bool successfullyApplied;
 
             if (voucher.CheckValidity(basket.BasketContents, out string offerCheckMessage))
