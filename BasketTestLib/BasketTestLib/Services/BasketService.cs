@@ -1,84 +1,140 @@
 ﻿using BasketTestLib.Exceptions;
+using BasketTestLib.Extensions;
 using BasketTestLib.Interfaces;
 using BasketTestLib.Models;
+using BasketTestLib.Validators;
+using FluentValidation.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BasketTestLib.Services
 {
-    /// <summary>
-    /// Singleton class (thread safe) which exposes basket functionality. Allows the creation of a new basket, and retrieval of existing baskets by their GUID.
-    /// </summary>
-    public class BasketService
+    public class BasketService : IBasketService
     {
-        #region Properties
+        #region Auto implemented Properties
 
-        public Dictionary<Guid, IBasket> Baskets { get; set; }
-        public Guid Guid { get; set; }
+        public List<Product> BasketContents { get; private set; }
+        public List<IVoucher> AppliedVouchers { get; private set; }
+        public decimal BasketNetTotal { get; private set; }
+        public decimal BasketDiscount { get; private set; }
+        public Guid BasketGuid { get; private set; }
 
         #endregion
 
         #region Local Fields
 
-        ICodeCheckService _codeCheckService;
-        private static BasketService _singletonInstance;
-        private static readonly object _lock = new();    
-        
+        readonly ICodeCheckService _codeCheckService;
+
         #endregion
 
         #region Constructors
 
-        private BasketService(ICodeCheckService codeCheckService)
-        {            
+        public BasketService(ICodeCheckService codeCheckService)
+        {
+            BasketContents = new List<Product>();
+            AppliedVouchers = new List<IVoucher>();
             _codeCheckService = codeCheckService;
-            Baskets = new Dictionary<Guid, IBasket>();
-            Guid = Guid.NewGuid();
         }
 
         #endregion
 
         #region Instance methods
-
-        public static BasketService GetInstance(ICodeCheckService codeCheckService)
+        
+        public void AddProduct(Product product)
         {
-            if (_singletonInstance == null)
-            {
-                lock (_lock)
-                {
-                    if (_singletonInstance == null)
-                    {
-                        _singletonInstance = new BasketService(codeCheckService);                        
-                    }
-                }
-            }
+            var validator = new ProductValidator();
+            ValidationResult resultOfValidation = validator.Validate(product);
 
-            return _singletonInstance;
-        }
-
-        public IBasket GetBasket(Guid? guid = null)
-        {
-            if (guid == null)
+            if (resultOfValidation.IsValid)
             {
-                IBasket temp;
-                lock (_lock)
-                {
-                    temp = new Basket(_codeCheckService);
-                    var newGuid = Guid.NewGuid();
-                    temp.BasketGuid = newGuid;
-                    Baskets.Add(newGuid, temp); 
-                }
-                return temp;
-            }
-
-            if (guid != null && Baskets.ContainsKey((Guid)guid))
-            {
-                return Baskets.Where(item => item.Key == guid).Select(item => item.Value).FirstOrDefault();
+                BasketContents.Add(product);
+                BasketNetTotal += product.UnitPrice;
             }
             else
             {
-                throw new BasketNotFoundException("Basket with supplied guid not found");
+                throw new InvalidProductException("Validation failed with message: " + resultOfValidation.ToString());
             }
+        }
+
+        public void RemoveProduct(Product product, out string message)
+        {
+            BasketContents.Remove(product);
+
+            RecalculateDiscount(out message);
+        }
+
+        private void RecalculateDiscount(out string compositeMessage)
+        {
+            BasketDiscount = 0.0m;            
+            var sb = new StringBuilder();
+            var tempVoucherList = AppliedVouchers.DeepCopy();
+            AppliedVouchers.Clear();
+
+            foreach (var voucher in tempVoucherList)
+            {
+                if (!voucher.ApplyVoucher(_codeCheckService, this, out string message))
+                {
+                    sb.Append(message);
+                }                
+            }
+
+            compositeMessage = sb.ToString();
+        }
+
+        public decimal GetBasketFinalValue()
+        {
+            var discountableBasketTotal = GetNonVoucherNetTotal();
+            var unDiscountableAmount = BasketNetTotal - discountableBasketTotal;
+            var finalAmount = 0m;
+            var resultOfDiscount = discountableBasketTotal - BasketDiscount;
+
+            if (resultOfDiscount > 0)
+            {
+                finalAmount += resultOfDiscount;
+            }
+
+            finalAmount += unDiscountableAmount;
+            return finalAmount;
+        }
+
+        public decimal GetNonVoucherNetTotal()
+        {
+            decimal runningTotal = 0m;
+
+            foreach (var product in BasketContents)
+            {
+                switch (product)
+                {
+                    case GiftVoucher:
+                        break;
+                    default:
+                        runningTotal += product.UnitPrice;
+                        break;
+                }
+            }
+
+            return runningTotal;
+        }
+
+        public decimal GetTotalValueForType(Type applicableType)
+        {
+            var productsOfType = BasketContents.Where(item => item.GetType() == applicableType
+                                                              || item.GetType().IsSubclassOf(applicableType)).ToList();
+            var subTotal = 0.0m;
+
+            foreach (var item in productsOfType)
+            {
+                subTotal += item.UnitPrice;
+            }
+
+            return subTotal;
+        }
+
+        void IBasketService.IncrementBasketDiscount(decimal amount)
+        {
+            BasketDiscount += amount;
         }
 
         #endregion

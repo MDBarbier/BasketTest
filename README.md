@@ -23,29 +23,26 @@ The solution has the following namespaces:
 
 ## Usage
 
-The client should invoke the "GetInstance" method of the BasketService, which is a singleton class. GetInstance returns the existing singleton or creates it. 
+Firstly create an instance of the BasketService class.
 
  BasketService uses constrcutor based dependency injection and therefore takes a parameter of type ICodeCheckService (ICodeCheckService is an interface which simulates calling off to an external service to check if a provided voucher code is valid. For the purposes of the unit tests, a stub is used to simulate this external service).
 
-Once the client has a reference to the BasketService, they can call the "GetBasket" method which allocates a basket. The "BasketGuid" property of the returned basket can be used to retrieve the existing basket from the BasketService later if required.
-
 Now the client has a reference to an instance of Basket they can use the various methods on it such as "AddProduct", "ApplyVoucher", "GetBaskedFinalValue" etc.
+
+Model classes can be instantiated to represent the various products and vouchers offered, and any behaviour defined.
 
 ## Architectural Considerations
 
-### Design patterns
-
-- The BasketService is a Singleton for centralised control and management of baskets, including retrieving a basket by GUID
-- The BasketService is also effectively a facade for the more complex logic such as ApplyVoucher - the client does not need to worry about the calculations going on under the hood
-- The Strategy pattern is used to make the varying logic for vouchers cleaner, and this could also easily be extended if more voucher types were added later
+- The architecture uses inheritance, Product is the base class that all Product concrete classes inherit from. Gift Vouchers inherit from product (because they can be bought) but also implement the Voucher interface so they have the functionality of vouchers available.
 
 ### SOLID principles
 
 In the design of the BasketService component I have tried to keep to SOLID principles where applicable i.e: 
 
 - Single responsibility (methods have been designed to only perform 1 task)
+- Open/closed principle (BasketService designed in a way that a different implementation could be added based on the same interface that behaved different without modifying the original code)
 - Interface segregation (all interfaces deal with only their relevant functionality), 
-- Liskov substitution principle (no subclass overrides base class functionality) 
+- Liskov substitution principle (no subclass overrides base class functionality so subclasses could be swapped for the base class) 
 - Dependency Inversion (depending on abstractions i.e. interfaces, dependency injection). 
 
 ### Code complexity

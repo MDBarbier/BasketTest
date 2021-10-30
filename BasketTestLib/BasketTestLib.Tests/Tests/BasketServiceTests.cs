@@ -1,9 +1,7 @@
 ﻿using BasketTestLib.Models;
 using BasketTestLib.Services;
 using FluentAssertions;
-using System;
 using System.Linq;
-using System.Threading;
 using Xunit;
 
 namespace BasketTestLib.Tests
@@ -11,92 +9,26 @@ namespace BasketTestLib.Tests
     public class BasketServiceTests
     {
         [Fact]
-        public void TestSingletonThreadSafeBehaviour()
-        {
-            Guid thread1Guid = Guid.NewGuid();
-            Guid thread2Guid = Guid.NewGuid();
-            Guid thread3Guid = Guid.NewGuid();
-
-            Thread process1 = new(() =>
-            {
-                thread1Guid = TestSingleton();
-            });
-            Thread process2 = new(() =>
-            {
-                thread2Guid = TestSingleton();
-            });
-            Thread process3 = new(() =>
-            {
-                thread3Guid = TestSingleton();
-            });
-
-            process1.Start();
-            process2.Start();
-            process3.Start();
-
-            process1.Join();
-            process2.Join();
-            process3.Join();
-
-            thread1Guid.Should().Be(thread2Guid);
-            thread1Guid.Should().Be(thread3Guid);
-            thread3Guid.Should().Be(thread2Guid);
-        }
-
-        [Fact]
-        public void TestBasketRetrieval()
-        {
-            //Arrange
-            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-
-            //Act
-            var basket = singleton.GetBasket();
-            var retrievedBasket = singleton.GetBasket(basket.BasketGuid);
-
-            //Assert
-            basket.BasketGuid.Should().NotBeEmpty();
-            retrievedBasket.Should().NotBeNull();
-            retrievedBasket.BasketGuid.Should().Be(basket.BasketGuid);
-        }
-
-        [Fact]
-        public void TestMultipleBasket()
-        {
-            //Arrange
-            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-
-            //Act
-            var basket1 = singleton.GetBasket();
-            var basket2 = singleton.GetBasket();
-
-            //Assert
-            basket1.BasketGuid.Should().NotBeEmpty();
-            basket2.BasketGuid.Should().NotBeEmpty();
-            basket1.BasketGuid.Should().NotBe(basket2.BasketGuid);
-        }
-
-        [Fact]
         public void TestRemoveItem()
         {
             //Arrange
-            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = singleton.GetBasket();
+            var basketService = new BasketService(new CodeCheckServiceStub());            
             var product1 = new Gloves(10.00m);
             var product2 = new Jumper(20.00m);
 
             //Act
-            basket.AddProduct(product1);
-            basket.AddProduct(product2);
+            basketService.AddProduct(product1);
+            basketService.AddProduct(product2);
 
             //Assert
-            basket.BasketContents.Count.Should().Be(2);
+            basketService.BasketContents.Count.Should().Be(2);
 
             //Act
-            basket.RemoveProduct(product1, out string message);
+            basketService.RemoveProduct(product1, out string message);
 
             //Assert
-            basket.BasketContents.Count.Should().Be(1);
-            basket.BasketContents.First().GetType().Should().Be(typeof(Jumper));
+            basketService.BasketContents.Count.Should().Be(1);
+            basketService.BasketContents.First().GetType().Should().Be(typeof(Jumper));
             message.Should().BeEmpty();
         }
 
@@ -104,30 +36,30 @@ namespace BasketTestLib.Tests
         public void TestRecalculateDiscount()
         {
             //Arrange
-            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = singleton.GetBasket();
+            var codeCheckServiceStub = new CodeCheckServiceStub();
+            var basketService = new BasketService(codeCheckServiceStub);            
             var product1 = new Gloves(10.00m);
             var product2 = new Jumper(20.00m);
             var offerVoucher = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
 
             //Act - add the products and apply the voucher, then calculate the basket price
-            basket.AddProduct(product1);
-            basket.AddProduct(product2);
-            var applyResult = basket.ApplyVoucher(offerVoucher, out string _);
-            var firstTotal = basket.GetBasketFinalValue();
+            basketService.AddProduct(product1);
+            basketService.AddProduct(product2);
+            var applyResult = offerVoucher.ApplyVoucher(codeCheckServiceStub, basketService, out string _);
+            var firstTotal = basketService.GetBasketFinalValue();
 
             //Assert - check that the voucher was applied OK initially and the amount has been updated
             applyResult.Should().BeTrue();
             firstTotal.Should().Be(20.00m);
 
             //Act - now remove the product which means the voucher is not valid any more
-            basket.RemoveProduct(product1, out string message);
+            basketService.RemoveProduct(product1, out string message);
 
             //Assert - check that the voucher has been removed the total has been recalculated correctly, plus a message has been returned to indicate the voucher is no longer valid
-            basket.BasketContents.Count.Should().Be(1);
-            basket.AppliedVouchers.Count.Should().Be(0);
-            basket.BasketContents.First().GetType().Should().Be(typeof(Jumper));
-            basket.GetBasketFinalValue().Should().Be(30.00m);
+            basketService.BasketContents.Count.Should().Be(1);
+            basketService.AppliedVouchers.Count.Should().Be(0);
+            basketService.BasketContents.First().GetType().Should().Be(typeof(Jumper));
+            basketService.GetBasketFinalValue().Should().Be(30.00m);
             message.Should().Be("You have not reached the spend threshold for Gift Voucher YYY-YYY. Spend another £10.00 to receive £10.00 discount from your basket total.");
         }
 
@@ -135,32 +67,27 @@ namespace BasketTestLib.Tests
         public void TestOnlySingleOfferVoucherAllowed()
         {
             //Arrange
-            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = singleton.GetBasket();
+            var codeCheckServiceStub = new CodeCheckServiceStub();
+            var basketService = new BasketService(new CodeCheckServiceStub());            
             var product1 = new Gloves(50.00m);
             var product2 = new Jumper(20.00m);
             var offerVoucher1 = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
             var offerVoucher2 = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
 
             //Act - add the products and apply the voucher, then calculate the basket price
-            basket.AddProduct(product1);
-            basket.AddProduct(product2);
-            var applyResult1 = basket.ApplyVoucher(offerVoucher1, out string _);
+            basketService.AddProduct(product1);
+            basketService.AddProduct(product2);
+            var applyResult1 = offerVoucher1.ApplyVoucher(codeCheckServiceStub, basketService, out string _); 
 
             //Assert - check that the voucher was applied OK initially and the amount has been updated
             applyResult1.Should().BeTrue();
 
-            //Act - now remove the product which means the voucher is not valid any more
-            var applyResult2 = basket.ApplyVoucher(offerVoucher2, out string applyVoucherMessage2);
+            //Act - now remove the product which means the voucher is not valid any more            
+            var applyResult2 = offerVoucher2.ApplyVoucher(codeCheckServiceStub, basketService, out string applyVoucherMessage2);
 
             //Assert - check that the voucher has been removed the total has been recalculated correctly, plus a message has been returned to indicate the voucher is no longer valid
             applyResult2.Should().BeFalse();
             applyVoucherMessage2.Should().Be("An offer voucher has already been applied, only one offer voucher may be used per transaction");
-        }
-        private static Guid TestSingleton()
-        {
-            BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            return singleton.Guid;
         }
     }
 }

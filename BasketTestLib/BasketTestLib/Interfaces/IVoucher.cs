@@ -9,9 +9,10 @@ namespace BasketTestLib.Interfaces
     public interface IVoucher
     {
         public decimal DiscountAmount { get; }        
-        public string VoucherCode { get; set; }
+        public string VoucherCode { get; }
         public decimal ThresholdToActivate { get; }
 
-        bool CheckValidity(List<Product> basketContents, out string message);
+        public bool CheckValidity(List<Product> basketContents, ICodeCheckService codeCheckService, out string message);
+        public bool ApplyVoucher(ICodeCheckService codeCheckService, IBasketService basket, out string message);
     }
 }

@@ -1,4 +1,5 @@
-﻿using BasketTestLib.Interfaces;
+﻿using BasketTestLib.Exceptions;
+using BasketTestLib.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -9,7 +10,7 @@ namespace BasketTestLib.Models
         public decimal DiscountAmount { get; }
         public decimal ThresholdToActivate { get; }
         public Type ApplicableProductType { get; }
-        public string VoucherCode { get; set; }
+        public string VoucherCode { get; }
 
         public OfferVoucher(decimal discount, decimal thresholdToActivate, string voucherCode, Type applicableProductType)
         {
@@ -19,8 +20,10 @@ namespace BasketTestLib.Models
             ApplicableProductType = applicableProductType;
         }        
 
-        public bool CheckValidity(List<Product> basketContents, out string message)
+        public bool CheckValidity(List<Product> basketContents, ICodeCheckService codeCheckService, out string message)
         {
+            this.ValidateVoucher(codeCheckService);
+
             message = string.Empty;
             (bool foundValidProduct, decimal totalPriceOfBasket) = ProcessBasketItems(basketContents);
 
@@ -57,6 +60,38 @@ namespace BasketTestLib.Models
             }
 
             return (foundValidProduct, totalPriceOfBasket);
+        }
+
+        public bool ApplyVoucher(ICodeCheckService codeCheckService, IBasketService basket, out string message)
+        {
+            message = string.Empty;
+            
+            foreach (var appliedVoucher in basket.AppliedVouchers)
+            {
+                if (appliedVoucher.GetType() == typeof(OfferVoucher))
+                {
+                    message = "An offer voucher has already been applied, only one offer voucher may be used per transaction";
+                    return false;
+                }
+            }
+
+            bool successfullyApplied;
+
+            if (CheckValidity(basket.BasketContents, codeCheckService, out string offerCheckMessage))
+            {
+                var maxDiscountable = basket.GetTotalValueForType(ApplicableProductType);
+                var actualDiscount = maxDiscountable - DiscountAmount > 0 ? DiscountAmount : maxDiscountable;
+                basket.IncrementBasketDiscount(actualDiscount);
+                successfullyApplied = true;
+                basket.AppliedVouchers.Add(this);
+            }
+            else
+            {
+                message = offerCheckMessage;
+                successfullyApplied = false;
+            }
+
+            return successfullyApplied;
         }
     }
 }

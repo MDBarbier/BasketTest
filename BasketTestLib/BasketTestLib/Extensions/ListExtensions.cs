@@ -2,7 +2,7 @@
 
 namespace BasketTestLib.Extensions
 {
-    public static class List
+    public static class ListExtensions
     {
         public static List<T> DeepCopy<T>(this List<T> l)
         {

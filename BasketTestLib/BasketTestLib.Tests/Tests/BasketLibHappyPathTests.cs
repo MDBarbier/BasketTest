@@ -15,14 +15,13 @@ namespace BasketTestLib.Tests
             var headLight = new HeadLight(3.50m);
             var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
             var expectedTotal = 68.15m;
-            var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket();
-            
+            var basketService = new BasketService(new CodeCheckServiceStub());
+
             //Act
-            basket.AddProduct(jumper);
-            basket.AddProduct(headLight);
-            basket.AddProduct(giftVoucher);
-            var totalBasketValue = basket.GetBasketFinalValue();
+            basketService.AddProduct(jumper);
+            basketService.AddProduct(headLight);
+            basketService.AddProduct(giftVoucher);
+            var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);
@@ -36,14 +35,13 @@ namespace BasketTestLib.Tests
             var gloves = new Gloves(10.50m);            
             var expectedTotal = 60.15m;
             var giftVoucher = new GiftVoucher(5.00m, "XXX-XXX");
-            var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket();
+            var basketService = new BasketService(new CodeCheckServiceStub());
 
             //Act
-            basket.AddProduct(jumper);
-            basket.AddProduct(gloves);
-            var voucherApplicationResult = basket.ApplyVoucher(giftVoucher, out string message);
-            var totalBasketValue = basket.GetBasketFinalValue();
+            basketService.AddProduct(jumper);
+            basketService.AddProduct(gloves);            
+            var voucherApplicationResult = giftVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
+            var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert            
             voucherApplicationResult.Should().BeTrue();
@@ -58,15 +56,14 @@ namespace BasketTestLib.Tests
             var jumper = new Jumper(26.00m);
             var gloves = new Gloves(25.00m);            
             var expectedTotal = 51.00m;
-            var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket();
+            var basketService = new BasketService(new CodeCheckServiceStub());
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(HeadGear));
 
             //Act
-            basket.AddProduct(jumper);
-            basket.AddProduct(gloves);
-            var voucherApplicationResult = basket.ApplyVoucher(offerVoucher, out string message);
-            var totalBasketValue = basket.GetBasketFinalValue();
+            basketService.AddProduct(jumper);
+            basketService.AddProduct(gloves);            
+            var voucherApplicationResult = offerVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
+            var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);            
@@ -84,16 +81,15 @@ namespace BasketTestLib.Tests
             var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(HeadGear));
             var expectedTotal = 61.00m;
-            var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket();
+            var basketService = new BasketService(new CodeCheckServiceStub());
 
             //Act
-            basket.AddProduct(jumper);
-            basket.AddProduct(gloves);
-            basket.AddProduct(headLight);
-            basket.AddProduct(giftVoucher);
-            var voucherApplicationResult = basket.ApplyVoucher(offerVoucher, out string message);
-            var totalBasketValue = basket.GetBasketFinalValue();
+            basketService.AddProduct(jumper);
+            basketService.AddProduct(gloves);
+            basketService.AddProduct(headLight);
+            basketService.AddProduct(giftVoucher);
+            var voucherApplicationResult = offerVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
+            var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);
@@ -110,15 +106,14 @@ namespace BasketTestLib.Tests
             var giftVoucher = new GiftVoucher(5.00m, "XXX-XXX");
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(Product));
             var expectedTotal = 41.00m;
-            var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket();
+            var basketService = new BasketService(new CodeCheckServiceStub());
 
             //Act
-            basket.AddProduct(jumper);
-            basket.AddProduct(gloves);
-            var giftVoucherApplicationResult = basket.ApplyVoucher(giftVoucher, out string giftVoucherMessage);
-            var offerVoucherApplicationResult = basket.ApplyVoucher(offerVoucher, out string offerVoucherMessage);
-            var totalBasketValue = basket.GetBasketFinalValue();
+            basketService.AddProduct(jumper);
+            basketService.AddProduct(gloves);
+            var giftVoucherApplicationResult = giftVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string giftVoucherMessage);
+            var offerVoucherApplicationResult = offerVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string offerVoucherMessage);
+            var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);
@@ -136,14 +131,13 @@ namespace BasketTestLib.Tests
             var giftVoucher = new GiftVoucher(30.00m, "XXX-XXX");
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(Product));
             var expectedTotal = 55.00m;
-            var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket();
+            var basketService = new BasketService(new CodeCheckServiceStub());
 
             //Act
-            basket.AddProduct(gloves);
-            basket.AddProduct(giftVoucher);
-            var voucherApplicationResult = basket.ApplyVoucher(offerVoucher, out string message);
-            var totalBasketValue = basket.GetBasketFinalValue();
+            basketService.AddProduct(gloves);
+            basketService.AddProduct(giftVoucher);            
+            var voucherApplicationResult = offerVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
+            var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);
@@ -158,13 +152,12 @@ namespace BasketTestLib.Tests
             var gloves = new Gloves(25.00m);
             var giftVoucher = new GiftVoucher(30.00m, "XXX-XXX");
             var expectedTotal = 0.00m;
-            var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket();
+            var basketService = new BasketService(new CodeCheckServiceStub());
 
             //Act
-            basket.AddProduct(gloves);
-            var voucherApplicationResult = basket.ApplyVoucher(giftVoucher, out string message);
-            var totalBasketValue = basket.GetBasketFinalValue();
+            basketService.AddProduct(gloves);            
+            var voucherApplicationResult = giftVoucher.ApplyVoucher(new CodeCheckServiceStub(), basketService, out string message);
+            var totalBasketValue = basketService.GetBasketFinalValue();
 
             //Assert
             totalBasketValue.Should().Be(expectedTotal);
