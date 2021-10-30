@@ -1,6 +1,6 @@
 ﻿namespace BasketTestLib.Models
 {
-    public class Product
+    public abstract class Product
     {
         public decimal UnitPrice { get; set; }
 

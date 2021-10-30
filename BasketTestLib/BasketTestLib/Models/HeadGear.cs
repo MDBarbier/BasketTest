@@ -1,6 +1,6 @@
 ﻿namespace BasketTestLib.Models
 {
-    public class HeadGear : Product
+    public abstract class HeadGear : Product
     {
         public HeadGear(decimal unitPrice) : base(unitPrice)
         {
