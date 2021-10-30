@@ -33,7 +33,9 @@ Model classes can be instantiated to represent the various products and vouchers
 
 ## Architectural Considerations
 
-- The architecture uses inheritance, Product is the base class that all Product concrete classes inherit from. Gift Vouchers inherit from product (because they can be bought) but also implement the Voucher interface so they have the functionality of vouchers available.
+- Product is the base abstract class that all Product concrete classes inherit from. 
+- Products with sub categories such as HeadGear inherit from Product initially, and then the actual concrete implementation inherits from the HeadGear abstract class.
+- Gift Vouchers inherit from product (because they are a product that can be bought) but also implement the Voucher interface so they have the functionality of vouchers available.
 
 ### SOLID principles
 
