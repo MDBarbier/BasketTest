@@ -29,7 +29,7 @@ namespace BasketTestLib.Models
                 message = $"There are no products in your basket applicable to Offer Voucher {VoucherCode}.";
                 return false;
             }
-            else if (foundValidProduct && totalPriceOfBasket < ThresholdToActivate)
+            else if (foundValidProduct && totalPriceOfBasket <= ThresholdToActivate)
             {
                 message = $"You have not reached the spend threshold for Gift Voucher {VoucherCode}. Spend another £{ThresholdToActivate - totalPriceOfBasket + 0.01m} to receive £{DiscountAmount.ToString(".00##")} discount from your basket total.";
                 return false;

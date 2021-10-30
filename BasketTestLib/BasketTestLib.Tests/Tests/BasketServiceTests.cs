@@ -108,7 +108,7 @@ namespace BasketTestLib.Tests
             var basket = singleton.GetBasket(null);
             var product1 = new Gloves(10.00m);
             var product2 = new Jumper(20.00m);
-            var offerVoucher = new OfferVoucher(10.00m, 30.00m, "YYY-YYY", typeof(Product));
+            var offerVoucher = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
 
             //Act - add the products and apply the voucher, then calculate the basket price
             basket.AddProduct(product1);
@@ -128,7 +128,7 @@ namespace BasketTestLib.Tests
             basket.AppliedVouchers.Count.Should().Be(0);
             basket.BasketContents.First().GetType().Should().Be(typeof(Jumper));
             basket.GetBasketFinalValue().Should().Be(30.00m);
-            message.Should().Be("You have not reached the spend threshold for Gift Voucher YYY-YYY. Spend another £10.01 to receive £10.00 discount from your basket total.");
+            message.Should().Be("You have not reached the spend threshold for Gift Voucher YYY-YYY. Spend another £10.00 to receive £10.00 discount from your basket total.");
         }
 
         private static Guid TestSingleton()
