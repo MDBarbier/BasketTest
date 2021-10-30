@@ -1,12 +1,13 @@
-﻿using System;
+﻿using BasketTestLib.Models;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BasketTestLib.Interfaces
 {
     public interface IVoucher
     {
+        public float DiscountAmount { get; }        
+        public string VoucherCode { get; set; }
+
+        bool CheckValidity(List<Product> basketContents, out string message);
     }
 }
