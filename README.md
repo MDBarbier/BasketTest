@@ -57,3 +57,4 @@ I have used the Visual Studio Code metric tools to review the cyclometric comple
 Things that I would consider adding should this demo be extended:
 
 - Repository/unit of work pattern to interact with a datastore to represent a product stock database
+- Add functionality to deal with the excess amounts from applied gift vouchers
