@@ -2,7 +2,7 @@
 {
     public class HeadGear : Product
     {
-        public HeadGear(float unitPrice) : base(unitPrice)
+        public HeadGear(decimal unitPrice) : base(unitPrice)
         {
 
         }

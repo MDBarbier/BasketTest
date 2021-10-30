@@ -2,9 +2,9 @@
 {
     public class Product
     {
-        public float UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
 
-        public Product(float unitPrice)
+        public Product(decimal unitPrice)
         {
             UnitPrice = unitPrice;
         }

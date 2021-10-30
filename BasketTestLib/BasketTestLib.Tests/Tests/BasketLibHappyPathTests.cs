@@ -11,10 +11,10 @@ namespace BasketTestLib.Tests
         public void Basket1HappyPath()
         {
             //Arrange
-            var jumper = new Jumper(54.65f);
-            var headLight = new HeadLight(3.50f);
-            var giftVoucher = new GiftVoucher(10.00f, "XXX-XXX");
-            var expectedTotal = 68.15f;
+            var jumper = new Jumper(54.65m);
+            var headLight = new HeadLight(3.50m);
+            var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
+            var expectedTotal = 68.15m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
             
@@ -32,10 +32,10 @@ namespace BasketTestLib.Tests
         public void Basket2HappyPath()
         {
             //Arrange
-            var jumper = new Jumper(54.65f);
-            var gloves = new Gloves(10.50f);            
-            var expectedTotal = 60.15f;
-            var giftVoucher = new GiftVoucher(5.00f, "XXX-XXX");
+            var jumper = new Jumper(54.65m);
+            var gloves = new Gloves(10.50m);            
+            var expectedTotal = 60.15m;
+            var giftVoucher = new GiftVoucher(5.00m, "XXX-XXX");
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
 
@@ -55,12 +55,12 @@ namespace BasketTestLib.Tests
         public void Basket3HappyPath()
         {
             //Arrange
-            var jumper = new Jumper(26.00f);
-            var gloves = new Gloves(25.00f);            
-            var expectedTotal = 51.00f;
+            var jumper = new Jumper(26.00m);
+            var gloves = new Gloves(25.00m);            
+            var expectedTotal = 51.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
-            var offerVoucher = new OfferVoucher(5.00f, 50.00f, "YYY-YYY", typeof(HeadGear));
+            var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(HeadGear));
 
             //Act
             basket.AddProduct(jumper);
@@ -78,12 +78,12 @@ namespace BasketTestLib.Tests
         public void Basket4HappyPath()
         {
             //Arrange
-            var jumper = new Jumper(26.00f);
-            var gloves = new Gloves(25.00f);
-            var headLight = new HeadLight(3.50f);
-            var giftVoucher = new GiftVoucher(10.00f, "XXX-XXX");
-            var offerVoucher = new OfferVoucher(5.00f, 50.00f, "YYY-YYY", typeof(HeadGear));
-            var expectedTotal = 61.00f;
+            var jumper = new Jumper(26.00m);
+            var gloves = new Gloves(25.00m);
+            var headLight = new HeadLight(3.50m);
+            var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
+            var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(HeadGear));
+            var expectedTotal = 61.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
 
@@ -105,11 +105,11 @@ namespace BasketTestLib.Tests
         public void Basket5HappyPath()
         {
             //Arrange
-            var jumper = new Jumper(26.00f);
-            var gloves = new Gloves(25.00f);
-            var giftVoucher = new GiftVoucher(5.00f, "XXX-XXX");
-            var offerVoucher = new OfferVoucher(5.00f, 50.00f, "YYY-YYY", typeof(Product));
-            var expectedTotal = 41.00f;
+            var jumper = new Jumper(26.00m);
+            var gloves = new Gloves(25.00m);
+            var giftVoucher = new GiftVoucher(5.00m, "XXX-XXX");
+            var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(Product));
+            var expectedTotal = 41.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
 
@@ -132,10 +132,10 @@ namespace BasketTestLib.Tests
         public void Basket6HappyPath()
         {
             //Arrange           
-            var gloves = new Gloves(25.00f);
-            var giftVoucher = new GiftVoucher(30.00f, "XXX-XXX");
-            var offerVoucher = new OfferVoucher(5.00f, 50.00f, "YYY-YYY", typeof(Product));
-            var expectedTotal = 55.00f;
+            var gloves = new Gloves(25.00m);
+            var giftVoucher = new GiftVoucher(30.00m, "XXX-XXX");
+            var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(Product));
+            var expectedTotal = 55.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
 
@@ -155,9 +155,9 @@ namespace BasketTestLib.Tests
         public void Basket7HappyPath()
         {
             //Arrange
-            var gloves = new Gloves(25.00f);
-            var giftVoucher = new GiftVoucher(30.00f, "XXX-XXX");
-            var expectedTotal = 0.00f;
+            var gloves = new Gloves(25.00m);
+            var giftVoucher = new GiftVoucher(30.00m, "XXX-XXX");
+            var expectedTotal = 0.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
 

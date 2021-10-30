@@ -11,8 +11,8 @@ namespace BasketTestLib.Tests
         public void TestThatGiftVouchersNotAppliedToGiftVouchers()
         {
             //Arrange
-            var giftVoucher = new GiftVoucher(10.00f, "XXX-XXX");
-            var expectedTotal = 10.00f;
+            var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
+            var expectedTotal = 10.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
 
@@ -31,10 +31,10 @@ namespace BasketTestLib.Tests
         public void TestThatGiftVouchersNotCountedToOfferVouchers()
         {
             //Arrange
-            var giftVoucher = new GiftVoucher(10.00f, "XXX-XXX");
-            var gloves = new Gloves(40.00f);
-            var offerVoucher = new OfferVoucher(10.00f, 50.00f, "YYY-YYY", typeof(Product));
-            var expectedTotal = 50.00f;
+            var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
+            var gloves = new Gloves(40.00m);
+            var offerVoucher = new OfferVoucher(10.00m, 50.00m, "YYY-YYY", typeof(Product));
+            var expectedTotal = 50.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
             var basket = basketService.GetBasket(null);
 

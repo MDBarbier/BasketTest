@@ -3,7 +3,7 @@
 namespace BasketTestLib.Exceptions
 {
     [Serializable]
-    class VoucherTypeNotRecognisedException : Exception
+    public class VoucherTypeNotRecognisedException : Exception
     {
         public VoucherTypeNotRecognisedException() { }
 

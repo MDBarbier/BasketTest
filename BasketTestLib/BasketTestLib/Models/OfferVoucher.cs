@@ -6,12 +6,12 @@ namespace BasketTestLib.Models
 {
     public class OfferVoucher : IVoucher
     {
-        public float DiscountAmount { get; }
-        public float ThresholdToActivate { get; }
+        public decimal DiscountAmount { get; }
+        public decimal ThresholdToActivate { get; }
         public Type ApplicableProductType { get; }
         public string VoucherCode { get; set; }
 
-        public OfferVoucher(float discount, float thresholdToActivate, string voucherCode, Type applicableProductType)
+        public OfferVoucher(decimal discount, decimal thresholdToActivate, string voucherCode, Type applicableProductType)
         {
             DiscountAmount = discount;
             VoucherCode = voucherCode;
@@ -23,7 +23,7 @@ namespace BasketTestLib.Models
         {
             message = string.Empty;
             bool foundValidProduct = false;
-            float totalPriceOfBasket = 0f;
+            decimal totalPriceOfBasket = 0m;
             ProcessBasketItems(basketContents, ref foundValidProduct, ref totalPriceOfBasket);
 
             if (!foundValidProduct)
@@ -33,14 +33,14 @@ namespace BasketTestLib.Models
             }
             else if (foundValidProduct && totalPriceOfBasket < ThresholdToActivate)
             {
-                message = $"You have not reached the spend threshold for Gift Voucher {VoucherCode}. Spend another £{ThresholdToActivate - totalPriceOfBasket + 0.01f} to receive £{DiscountAmount.ToString(".00##")} discount from your basket total.";
+                message = $"You have not reached the spend threshold for Gift Voucher {VoucherCode}. Spend another £{ThresholdToActivate - totalPriceOfBasket + 0.01m} to receive £{DiscountAmount.ToString(".00##")} discount from your basket total.";
                 return false;
             }
 
             return true;
         }
 
-        private void ProcessBasketItems(List<Product> basketContents, ref bool foundValidProduct, ref float totalPriceOfBasket)
+        private void ProcessBasketItems(List<Product> basketContents, ref bool foundValidProduct, ref decimal totalPriceOfBasket)
         {
             foreach (var item in basketContents)
             {

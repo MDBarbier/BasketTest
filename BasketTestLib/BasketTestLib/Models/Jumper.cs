@@ -2,7 +2,7 @@
 {
     public class Jumper : Product
     {
-        public Jumper(float unitPrice) : base(unitPrice)
+        public Jumper(decimal unitPrice) : base(unitPrice)
         {
 
         }

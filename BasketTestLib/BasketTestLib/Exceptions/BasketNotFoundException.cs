@@ -3,7 +3,7 @@
 namespace BasketTestLib.Exceptions
 {
     [Serializable]
-    class BasketNotFoundException : Exception
+    public class BasketNotFoundException : Exception
     {
         public BasketNotFoundException() { }
 

@@ -5,10 +5,11 @@ namespace BasketTestLib.Models
 {
     public class GiftVoucher : Product, IVoucher
     {
-        public float DiscountAmount { get; }
+        public decimal DiscountAmount { get; }
         public string VoucherCode { get; set; }
+        public decimal ThresholdToActivate { get; }
 
-        public GiftVoucher(float unitPrice, string voucherCode) : base(unitPrice)
+        public GiftVoucher(decimal unitPrice, string voucherCode) : base(unitPrice)
         {
             DiscountAmount = unitPrice;
             VoucherCode = voucherCode;

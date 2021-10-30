@@ -2,7 +2,7 @@
 {
     public class HeadLight : HeadGear
     {
-        public HeadLight(float unitPrice) : base(unitPrice)
+        public HeadLight(decimal unitPrice) : base(unitPrice)
         {
 
         }

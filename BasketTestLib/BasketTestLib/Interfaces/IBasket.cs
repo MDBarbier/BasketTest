@@ -7,19 +7,19 @@ namespace BasketTestLib.Interfaces
     public interface IBasket
     {
         public List<Product> BasketContents { get; set; }
-        public float BasketNetTotal { get; set; }
-        public float BasketDiscount { get; set; }
+        public decimal BasketNetTotal { get; set; }
+        public decimal BasketDiscount { get; set; }
         public Guid BasketGuid { get; set; }
 
 
         void AddProduct(Product product);
 
-        float GetBasketFinalValue();
+        decimal GetBasketFinalValue();
 
-        float GetNonVoucherNetTotal();
+        decimal GetNonVoucherNetTotal();
 
         bool ApplyVoucher(IVoucher voucher, out string message);
 
-        float GetTotalValueForType(Type applicableType);
+        decimal GetTotalValueForType(Type applicableType);
     }
 }
