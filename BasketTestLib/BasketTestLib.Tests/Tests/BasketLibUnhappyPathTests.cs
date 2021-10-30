@@ -14,7 +14,7 @@ namespace BasketTestLib.Tests
             var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
             var expectedTotal = 10.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
 
             //Act
             basket.AddProduct(giftVoucher);
@@ -36,7 +36,7 @@ namespace BasketTestLib.Tests
             var offerVoucher = new OfferVoucher(10.00m, 50.00m, "YYY-YYY", typeof(Product));
             var expectedTotal = 50.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
 
             //Act
             basket.AddProduct(giftVoucher);

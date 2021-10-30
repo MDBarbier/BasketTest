@@ -56,7 +56,7 @@ namespace BasketTestLib.Services
             return _singletonInstance;
         }
 
-        public IBasket GetBasket(Guid? guid)
+        public IBasket GetBasket(Guid? guid = null)
         {
             if (guid == null)
             {

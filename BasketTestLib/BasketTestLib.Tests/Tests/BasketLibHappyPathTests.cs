@@ -16,7 +16,7 @@ namespace BasketTestLib.Tests
             var giftVoucher = new GiftVoucher(10.00m, "XXX-XXX");
             var expectedTotal = 68.15m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
             
             //Act
             basket.AddProduct(jumper);
@@ -37,7 +37,7 @@ namespace BasketTestLib.Tests
             var expectedTotal = 60.15m;
             var giftVoucher = new GiftVoucher(5.00m, "XXX-XXX");
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
 
             //Act
             basket.AddProduct(jumper);
@@ -59,7 +59,7 @@ namespace BasketTestLib.Tests
             var gloves = new Gloves(25.00m);            
             var expectedTotal = 51.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(HeadGear));
 
             //Act
@@ -85,7 +85,7 @@ namespace BasketTestLib.Tests
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(HeadGear));
             var expectedTotal = 61.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
 
             //Act
             basket.AddProduct(jumper);
@@ -111,7 +111,7 @@ namespace BasketTestLib.Tests
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(Product));
             var expectedTotal = 41.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
 
             //Act
             basket.AddProduct(jumper);
@@ -137,7 +137,7 @@ namespace BasketTestLib.Tests
             var offerVoucher = new OfferVoucher(5.00m, 50.00m, "YYY-YYY", typeof(Product));
             var expectedTotal = 55.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
 
             //Act
             basket.AddProduct(gloves);
@@ -159,7 +159,7 @@ namespace BasketTestLib.Tests
             var giftVoucher = new GiftVoucher(30.00m, "XXX-XXX");
             var expectedTotal = 0.00m;
             var basketService = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = basketService.GetBasket(null);
+            var basket = basketService.GetBasket();
 
             //Act
             basket.AddProduct(gloves);

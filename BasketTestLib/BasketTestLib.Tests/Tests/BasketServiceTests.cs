@@ -50,7 +50,7 @@ namespace BasketTestLib.Tests
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
 
             //Act
-            var basket = singleton.GetBasket(null);
+            var basket = singleton.GetBasket();
             var retrievedBasket = singleton.GetBasket(basket.BasketGuid);
 
             //Assert
@@ -66,8 +66,8 @@ namespace BasketTestLib.Tests
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
 
             //Act
-            var basket1 = singleton.GetBasket(null);
-            var basket2 = singleton.GetBasket(null);
+            var basket1 = singleton.GetBasket();
+            var basket2 = singleton.GetBasket();
 
             //Assert
             basket1.BasketGuid.Should().NotBeEmpty();
@@ -80,7 +80,7 @@ namespace BasketTestLib.Tests
         {
             //Arrange
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = singleton.GetBasket(null);
+            var basket = singleton.GetBasket();
             var product1 = new Gloves(10.00m);
             var product2 = new Jumper(20.00m);
 
@@ -105,7 +105,7 @@ namespace BasketTestLib.Tests
         {
             //Arrange
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = singleton.GetBasket(null);
+            var basket = singleton.GetBasket();
             var product1 = new Gloves(10.00m);
             var product2 = new Jumper(20.00m);
             var offerVoucher = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
@@ -136,7 +136,7 @@ namespace BasketTestLib.Tests
         {
             //Arrange
             BasketService singleton = BasketService.GetInstance(new CodeCheckServiceStub());
-            var basket = singleton.GetBasket(null);
+            var basket = singleton.GetBasket();
             var product1 = new Gloves(50.00m);
             var product2 = new Jumper(20.00m);
             var offerVoucher1 = new OfferVoucher(10.00m, 29.99m, "YYY-YYY", typeof(Product));
