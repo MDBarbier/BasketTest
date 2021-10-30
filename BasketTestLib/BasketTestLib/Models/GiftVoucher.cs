@@ -1,5 +1,4 @@
-﻿using BasketTestLib.Exceptions;
-using BasketTestLib.Interfaces;
+﻿using BasketTestLib.Interfaces;
 using System.Collections.Generic;
 
 namespace BasketTestLib.Models
@@ -44,19 +43,12 @@ namespace BasketTestLib.Models
         public bool ApplyVoucher(ICodeCheckService codeCheckService, IBasketService basket, out string message)
         {
             message = string.Empty;
-            if (!codeCheckService.CheckCodeValidity(VoucherCode))
-            {
-                throw new VoucherCodeInvalidException($"Provided voucher code {VoucherCode} was not recognised");
-            }
-
             bool successfullyApplied;
-
+            
             if (CheckValidity(basket.BasketContents, codeCheckService, out string giftCheckMessage))
             {
-                var unDiscountable = basket.GetTotalValueForType(typeof(GiftVoucher));
-                var maxDiscountable = basket.BasketNetTotal - unDiscountable;
-                var actualDiscount = maxDiscountable - DiscountAmount > 0 ? DiscountAmount : maxDiscountable;
-                basket.IncrementBasketDiscount(actualDiscount);
+                var maxDiscountable = basket.BasketNetTotal - basket.GetTotalValueForType(typeof(GiftVoucher));
+                basket.IncrementBasketDiscount(maxDiscountable - DiscountAmount > 0 ? DiscountAmount : maxDiscountable);
                 successfullyApplied = true;
                 basket.AppliedVouchers.Add(this);
             }

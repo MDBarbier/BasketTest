@@ -60,9 +60,12 @@ namespace BasketTestLib.Services
 
         public void RemoveProduct(Product product, out string message)
         {
-            BasketContents.Remove(product);
-
-            RecalculateDiscount(out message);
+            message = string.Empty;
+            if (BasketContents.Remove(product))
+            {
+                BasketNetTotal -= product.UnitPrice;
+                RecalculateDiscount(out message);
+            }
         }
 
         private void RecalculateDiscount(out string compositeMessage)
@@ -85,9 +88,9 @@ namespace BasketTestLib.Services
 
         public decimal GetBasketFinalValue()
         {
-            var discountableBasketTotal = GetNonVoucherNetTotal();
-            var unDiscountableAmount = BasketNetTotal - discountableBasketTotal;
             var finalAmount = 0m;
+            var discountableBasketTotal = GetNonVoucherNetTotal();
+            var unDiscountableAmount = BasketNetTotal - discountableBasketTotal;           
             var resultOfDiscount = discountableBasketTotal - BasketDiscount;
 
             if (resultOfDiscount > 0)

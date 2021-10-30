@@ -1,5 +1,4 @@
-﻿using BasketTestLib.Exceptions;
-using BasketTestLib.Interfaces;
+﻿using BasketTestLib.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -65,7 +64,7 @@ namespace BasketTestLib.Models
         public bool ApplyVoucher(ICodeCheckService codeCheckService, IBasketService basket, out string message)
         {
             message = string.Empty;
-            
+            bool successfullyApplied;
             foreach (var appliedVoucher in basket.AppliedVouchers)
             {
                 if (appliedVoucher.GetType() == typeof(OfferVoucher))
@@ -73,15 +72,12 @@ namespace BasketTestLib.Models
                     message = "An offer voucher has already been applied, only one offer voucher may be used per transaction";
                     return false;
                 }
-            }
-
-            bool successfullyApplied;
+            }            
 
             if (CheckValidity(basket.BasketContents, codeCheckService, out string offerCheckMessage))
             {
                 var maxDiscountable = basket.GetTotalValueForType(ApplicableProductType);
-                var actualDiscount = maxDiscountable - DiscountAmount > 0 ? DiscountAmount : maxDiscountable;
-                basket.IncrementBasketDiscount(actualDiscount);
+                basket.IncrementBasketDiscount(maxDiscountable - DiscountAmount > 0 ? DiscountAmount : maxDiscountable);
                 successfullyApplied = true;
                 basket.AppliedVouchers.Add(this);
             }

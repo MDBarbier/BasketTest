@@ -1,10 +1,12 @@
-﻿namespace BasketTestLib.Utility
+﻿using System.Globalization;
+
+namespace BasketTestLib.Utility
 {
     public static class Currency
     {
-        public static char GetCurrencySymbol()
+        public static string GetCurrencySymbol()
         {
-            return '£';
+            return CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol;
         }
     }
 }
