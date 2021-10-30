@@ -21,22 +21,10 @@ namespace BasketTestLib.Models
 
         public bool CheckValidity(List<Product> basketContents, out string message)
         {
-            message = string.Empty;            
+            message = string.Empty;
             bool foundValidProduct = false;
             float totalPriceOfBasket = 0f;
-
-            foreach (var item in basketContents)            
-            {
-                if (item.GetType() != typeof(GiftVoucher))
-                {
-                    totalPriceOfBasket += item.UnitPrice; 
-                }
-
-                if (item.GetType() == ApplicableProductType || item.GetType().IsSubclassOf(ApplicableProductType))
-                {
-                    foundValidProduct = true;
-                }
-            }
+            ProcessBasketItems(basketContents, ref foundValidProduct, ref totalPriceOfBasket);
 
             if (!foundValidProduct)
             {
@@ -50,6 +38,22 @@ namespace BasketTestLib.Models
             }
 
             return true;
+        }
+
+        private void ProcessBasketItems(List<Product> basketContents, ref bool foundValidProduct, ref float totalPriceOfBasket)
+        {
+            foreach (var item in basketContents)
+            {
+                if (item.GetType() != typeof(GiftVoucher))
+                {
+                    totalPriceOfBasket += item.UnitPrice;
+                }
+
+                if (item.GetType() == ApplicableProductType || item.GetType().IsSubclassOf(ApplicableProductType))
+                {
+                    foundValidProduct = true;
+                }
+            }
         }
     }
 }
