@@ -66,7 +66,7 @@ In the design of the BasketService component I have tried to keep to SOLID princ
 
 ### Code complexity
 
-I have used the Visual Studio Code metric tools to review the cyclometric complexity of the methods and reduced this where it got too high (>5 was the metric I used to trigger a refactor).
+I have used the Visual Studio Code metric tools to review the cyclomatic complexity of the methods and reduced this where it got too high (>5 was the metric I used to trigger a refactor).
 
 ## Futher work to be considered
 
